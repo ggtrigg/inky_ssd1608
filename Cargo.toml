@@ -1,6 +1,6 @@
 [package]
 name = "inky-ssd1608"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Glenn Trigg <ggtrigg@gmail.com>"]
 edition = "2021"
 
@@ -10,7 +10,6 @@ categories = ["embedded"]
 
 [dependencies]
 i2cdev = "0.5.1"
-ssd1675 = "0.4.0"
 linux-embedded-hal = "0.3.2"
 embedded-graphics = "0.7.1"
 spi-memory = "0.2.0"

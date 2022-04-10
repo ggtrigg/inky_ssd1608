@@ -1,6 +1,3 @@
-// extern crate i2cdev;
-
-// use crate::eeprom::EEPType;
 use i2cdev::linux::LinuxI2CDevice;
 use linux_embedded_hal::spidev::{SpiModeFlags, SpidevOptions};
 use linux_embedded_hal::sysfs_gpio::Direction;
@@ -105,6 +102,8 @@ impl Inky1608 {
         i2c_bus: Option<LinuxI2CDevice>,
     ) -> Result<Inky1608, Error> {
         // Get eeprom info first so resolution and colour-type can be auto detected.
+        // (Actually it seems that the eeprom reported resolution isn't correct, so it
+        //  really always needs to be specified.)
         let dev = match i2c_bus {
             Some(d) => d,
             None => LinuxI2CDevice::new("/dev/i2c-1", EEP_ADDRESS)?,
@@ -183,7 +182,7 @@ impl Inky1608 {
         Ok(inky)
     }
 
-    pub fn setup(&mut self) -> Result<(), linux_embedded_hal::sysfs_gpio::Error> {
+    fn setup(&mut self) -> Result<(), linux_embedded_hal::sysfs_gpio::Error> {
         self.busy_pin.export()?;
         while !self.busy_pin.is_exported() {}
         self.busy_pin.set_direction(Direction::In)?;
@@ -203,14 +202,14 @@ impl Inky1608 {
         sleep(delay);
         self.reset_pin.set_value(1)?;
         sleep(delay);
-        self.send_command(0x12, None)?;
+        self.send_command(0x12, None)?; // Soft reset
         delay = Duration::new(1, 0);
         sleep(delay);
         self.busy_wait()
     }
     
     #[allow(dead_code)]
-    pub fn update(&mut self, buf_a: Vec<u8>, buf_b: Vec<u8>, busy_wait: bool) -> Result<(), linux_embedded_hal::sysfs_gpio::Error> {
+    fn update(&mut self, buf_a: Vec<u8>, buf_b: Vec<u8>, busy_wait: bool) -> Result<(), linux_embedded_hal::sysfs_gpio::Error> {
         self.setup()?;
         
         let mut packed_height = vec![((self.rows - 1) & 0xff) as u8, ((self.rows - 1) >> 8) as u8];
