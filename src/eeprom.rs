@@ -20,7 +20,7 @@ where
     T: I2CDevice, LinuxI2CError: std::convert::From<<T as I2CDevice>::Error>
 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Found: {}\nDisplay: {}x{}\nColour: {}", self.display_name(), self.width, self.height, self.colour_name())
+        write!(f, "{}\nDisplay: {}x{}\nColour: {}", self.display_name(), self.width, self.height, self.colour_name())
     }
 }
 
@@ -88,7 +88,6 @@ const DISPLAY_VARIANT: [Option<&str>; 17] = [
 #[cfg(test)]
 mod tests {
     use super::*;
-    // use i2cdev::core::I2CDevice;
     use i2cdev::mock::MockI2CDevice;
     
     #[test]

@@ -310,12 +310,7 @@ impl Inky1608 {
     
     #[allow(dead_code)]
     pub fn ident(&self) {
-        println!("Inky is {} rows x {} cols, rotation {} and colour {}", self.rows, self.cols, self.rotation, match self.colour {
-            Colour::Black => "black",
-            Colour::Red => "red",
-            Colour::Yellow => "yellow",
-            _ => "unknown!!"
-        });
+        println!("{}", self);
     }
     
     fn spi_write(&mut self, dc: u8, data: &[u8]) -> Result<(), linux_embedded_hal::sysfs_gpio::Error> {
@@ -380,6 +375,19 @@ impl DrawTarget for Inky1608 {
 impl OriginDimensions for Inky1608 {
     fn size(&self) -> Size {
         Size::new(self.r_cols.into(), self.r_rows.into())
+    }
+}
+
+impl std::fmt::Display for Inky1608 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Inky is {} rows x {} cols\nrotation {}, colour {}\nEeprom info: {}", self.rows, self.cols, self.rotation,
+            match self.colour {
+                Colour::Black => "black",
+                Colour::Red => "red",
+                Colour::Yellow => "yellow",
+                _ => "unknown!!"
+            }, self.eeprom
+        )
     }
 }
 

@@ -17,3 +17,14 @@ spi-memory = "0.2.0"
 [dependencies.embedded-hal]
 features = ["unproven"]
 version = "0.2.6"
+
+[dependencies.profont]
+optional = true
+version = "0.5.0"
+
+[dependencies.nix]
+optional = true
+version = "0.20.0"
+
+[features]
+examples = ["profont"]
